@@ -1,43 +1,39 @@
 #!/usr/bin/python -s
-#
-#  py-cat
-#
-#  Implements a subset of the GNU 'cat' functionality in python, with  added
-#  option of inserting delay between characters...
-#
-#  This  program is free software: you can redistribute it and/or modify  it
-#  under  the  terms of the GNU General Public License as published  by  the
-#  Free  Software  Foundation, either version 3 of the License, or (at  your
-#  option) any later version.
-#
-#  This  program  is  distributed in the hope that it will  be  useful,  but
-#  WITHOUT   ANY   WARRANTY;   without  even   the   implied   warranty   of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General
-#  Public License for more details.
-#
-#  You  should have received a copy of the GNU General Public License  along
-#  with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
-#  20 Mar 16   0.1   - Initial version - MEJT
-#   3 Apr 16   0.2   - Reads input files line by line, added ability to read
-#                      from standard input - MEJT
-#  25 Nov 17   0.3   - Tidied up parameter parsing code and added ability to
-#                      parse values for parameters - MEJT
-#                    - Added an optional delay between characters - MEJT
-#                    - Version number now a 'constant' - MEJT
-#
- 
+
+"""
+py-cat
+
+Implements a subset of the GNU 'cat' functionality in python, with added
+option of inserting delay between characters.
+
+This program is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation, either version 3 of the License, or (at your
+option) any later version.
+
+This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
+Public License for more details.
+
+You should have received a copy of the GNU General Public License along
+with this program. If not, see <http://www.gnu.org/licenses/>.
+"""
+
 import sys, os
 import time
- 
+
+# Version of the script
 VERSION = 0.3
- 
+
 def _about():
+  """
+  Function to print usage details, example and exit.
+  """
   sys.stdout.write(
     "Usage: " + sys.argv[0] + "[OPTION]... [FILE]...\n" +
     "Concatenate FILE(s)to standard output.\n" + "\n" +
-    "  -b, --number-nonblank    number nonempty output lines," + 
-    " overrides -n\n" + 
+    "  -b, --number-nonblank    number nonempty output lines, overrides -n\n" + 
     "  -n, --number             number all output lines \n" +
     "  -r, --restart            line numbers start at zero, implies -n\n" +
     "  -s, --squeeze-blank      suppress repeated empty output lines\n" +
@@ -49,6 +45,9 @@ def _about():
   raise SystemExit
  
 def _version():
+  """
+  Function to print script version, license details and exit.
+  """
   sys.stdout.write(os.path.basename(sys.argv[0]) + " " + str(VERSION) +"\n"
     "License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>.\n"
     "This is free software: you are free to change and redistribute it.\n"
@@ -56,10 +55,16 @@ def _version():
   raise SystemExit
  
 def _error(_error):
+  """
+  Function to print error message and exit.
+  """
   sys.stderr.write(os.path.basename(sys.argv[0]) + ": " + _error + "\n")
   raise SystemExit
  
 def _print(_line):
+  """
+  Function to print lines with optional line numbering, blank line squeezing, and character delay.
+  """
   global _number, _nonblank, _strip, _count, _blanks
   if len(_line) > 1: _blanks = 0
   if not(_blanks > 1 and _strip):
@@ -71,7 +76,8 @@ def _print(_line):
       sys.stdout.flush()
       time.sleep(_delay/1000.0)
   _blanks += 1
- 
+
+# Parse command-line arguments
 _names = []
 _restart = False
 _number = False
@@ -79,10 +85,12 @@ _nonblank = False
 _strip = False
 _delay = 0
 _count = 1
- 
+
+# Parsing command line arguments
 while _count < len(sys.argv):
   _arg = sys.argv [_count]
   if _arg[:1] == "-" and len(_arg) > 1:
+    # Checking for each option and setting flags accordingly
     if _arg in ["--squeeze-blank", "-s"]:
       _strip = True
     elif _arg in ["--restart", "-r"]:
@@ -115,9 +123,10 @@ while _count < len(sys.argv):
   else:
     _names.append(_arg) # If it isn't a qualified 
   _count += 1
- 
-if not len(_names) : _names.append("-") # Default to stdin.
- 
+
+# Default to stdin if no files are provided
+if not len(_names) : _names.append("-") 
+
 _count = 0
 _blanks = 0
 for _name in _names: 
@@ -136,4 +145,4 @@ for _name in _names:
     _error(_name + ": " + _err.strerror)
   except KeyboardInterrupt: # Catch ^C
     sys.stdout.write("\n")
-    sys.exit(0) 
+    sys.exit(0)
