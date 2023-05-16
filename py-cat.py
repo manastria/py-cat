@@ -1,7 +1,11 @@
 #!/usr/bin/python -s
 
 """
-py-cat
+py-cat: A Python implementation of the 'cat' command with additional features, such as character delay and line numbering options.
+
+License GPLv3+: GNU GPL version 3 or later GPL-3.0-or-later <http://gnu.org/licenses/gpl.html>.
+
+Source : https://mike632t.wordpress.com/2016/03/22/implementing-cat-in-python/
 
 Implements a subset of the GNU 'cat' functionality in python, with added
 option of inserting delay between characters.
